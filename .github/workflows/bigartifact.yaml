@@ -1,4 +1,4 @@
-name: py3createtorrent
+name: bigartifact
 on:
   workflow_dispatch:
     inputs:
