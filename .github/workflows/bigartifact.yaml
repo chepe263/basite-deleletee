@@ -2,14 +2,6 @@ name: bigartifact
 on:
   workflow_dispatch:
     inputs:
-      name:
-        description: Name of the torrent file
-        required: true
-        default: Firefox Setup 122.0.1
-      comment:
-        description: Comment
-        required: true
-        default: Firefox Setup 122.0.1 win64 en-US by torrent-webseed-creator
       url:
         description: URL of the file
         required: true
@@ -18,10 +10,6 @@ on:
         description: File name of the file in the torrent
         required: true
         default: Firefox Setup 122.0.1.exe
-      piece_size:
-        description: Piece Size. Use 0 for automatic calculation, or use the recommended piece size on the README.md file
-        required: true
-        default: 0
       maximize_disk_space:
         description: Maximize disk space. Check if getting out of disk space error
         type: boolean
@@ -40,18 +28,12 @@ jobs:
           remove-codeql: true
           remove-docker-images: true
           
-      - name: Install py3createtorrent
-        run: pipx install py3createtorrent
-        
       - name: Download file
         run: aria2c -x 16 -o "${{ inputs.file_name }}" "${{ inputs.url }}"
-        
-      - name: Create torrent using py3createtorrent
-        run: py3createtorrent -p "${{ inputs.piece_size }}" -c "${{ inputs.comment }}" -s "torrent-webseed-creator" -o "${{ inputs.name }}.torrent" --webseed "${{ inputs.url }}" "${{ inputs.file_name }}"
         
       - name: Upload torrent file
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.name }}
-          path: ${{ inputs.name }}
-          compression-level: 0
+          name: ${{ inputs.file_name }}
+          path: ${{ inputs.file_name }}
+          compression-level: 9
